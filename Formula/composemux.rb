@@ -7,6 +7,9 @@ class Composemux < Formula
 
   head "https://github.com/sofired/composemux.git", branch: "main"
 
+  # rust is build-only: the tap's CI (.github/workflows/tests.yml and
+  # publish.yml) builds and publishes bottles for this formula, so a normal
+  # `brew install` downloads a prebuilt binary rather than compiling.
   depends_on "rust" => :build
 
   # cargo fetches crates.io deps during the build; Homebrew's build sandbox
