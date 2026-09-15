@@ -7,6 +7,14 @@ class Composemux < Formula
 
   head "https://github.com/sofired/composemux.git", branch: "main"
 
+  bottle do
+    root_url "https://github.com/sofired/homebrew-tap/releases/download/bottles"
+    rebuild 1
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "1c3c04950bc7c2b3534ee2d2c336730814b688e232c4a9052c147cbffcc09d51"
+    sha256 cellar: :any,                 arm64_linux:   "e491106bb642172a3404e057880090b7f488d7a4cafed9f6668d3ddb6684c077"
+    sha256 cellar: :any,                 x86_64_linux:  "9978564366b1705a99478dcbee7c1115b0aab0d8c7d9f1bbca94654befaec67c"
+  end
+
   # rust is build-only: the tap's CI (.github/workflows/tests.yml and
   # publish.yml) builds and publishes bottles for this formula, so a normal
   # `brew install` downloads a prebuilt binary rather than compiling.
