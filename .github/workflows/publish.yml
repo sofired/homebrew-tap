@@ -27,6 +27,9 @@ defaults:
 jobs:
   pr-pull:
     runs-on: ubuntu-latest
+    # The publisher app's key lives in this environment, which only main can
+    # deploy to, so no other branch's copy of a workflow can read it.
+    environment: publish
     permissions:
       actions: read
       attestations: write
@@ -36,10 +39,26 @@ jobs:
       issues: read
       pull-requests: write
     steps:
+      # main's ruleset requires pull requests and the brew test-bot checks, which
+      # pr-pull's own commit (the `bottle do` block) doesn't have. GITHUB_TOKEN
+      # can't be a ruleset bypass, so git runs as the publisher app, which is.
+      # Its token is limited to this repository and contents: write, and expires
+      # with the job. It goes to setup-homebrew, whose git auth header the push
+      # then uses: one git credential for the whole job, never two headers.
+      # brew's API work (artifacts, the bottles release) and closing the pull
+      # request still use GITHUB_TOKEN, as their steps say.
+      - name: Get the publisher app's token
+        id: app_token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ secrets.PUBLISHER_APP_ID }}
+          private-key: ${{ secrets.PUBLISHER_PRIVATE_KEY }}
+          permission-contents: write
+
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@f8d4222eb633e65c2a0157383cf80861fc7fae7f # 2026.09.07.1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app_token.outputs.token }}
 
       - name: Set up git
         id: git_setup
