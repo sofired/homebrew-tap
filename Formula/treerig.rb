@@ -7,6 +7,13 @@ class Treerig < Formula
 
   head "https://github.com/sofired/treerig.git", branch: "main"
 
+  bottle do
+    root_url "https://github.com/sofired/homebrew-tap/releases/download/bottles"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "77d32b4dabea2cc2c97ea7bd54522ccc1b144165820d87fff5f7412dfd2b3e87"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "450bbf0872f4654a4a332a636acdc0fac7712b3c6b00809a6737c052d6da08d7"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "a3bcf84b621ddff3ca7e540ec156ec316da60e4aa028db0c803a7b11f3001b03"
+  end
+
   # go is build-only: the tap's CI builds and publishes bottles for this
   # formula, so a normal `brew install` downloads a prebuilt binary rather than
   # compiling.
